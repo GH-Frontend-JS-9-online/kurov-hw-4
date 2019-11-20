@@ -1,0 +1,32 @@
+{
+  "name": "kurov-hw-4",
+  "version": "1.0.0",
+  "description": "homework - 4",
+  "main": "index.js",
+  "scripts": {
+    "gulp": "gulp",
+    "minify": "gulp minify",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GH-Frontend-JS-9-online/kurov-hw-4.git"
+  },
+  "author": "kurov a",
+  "license": "ISC",
+  "dependencies": {
+    "browser-sync": "2.26.7",
+    "gulp": "^4.0.2",
+    "gulp-sass": "4.0.2",
+    "gulp-watch": "5.0.1",
+    "rimraf": "3.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/GH-Frontend-JS-9-online/kurov-hw-4/issues"
+  },
+  "homepage": "https://github.com/GH-Frontend-JS-9-online/kurov-hw-4#readme",
+  "devDependencies": {
+    "gulp-install": "^1.1.0",
+    "package.json": "^2.0.1"
+  }
+}
