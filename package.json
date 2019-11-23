@@ -26,7 +26,14 @@
   },
   "homepage": "https://github.com/GH-Frontend-JS-9-online/kurov-hw-4#readme",
   "devDependencies": {
+    "browser-sync": "^2.26.7",
+    "gulp": "^4.0.2",
     "gulp-install": "^1.1.0",
-    "package.json": "^2.0.1"
+    "gulp-rigger": "^0.5.8",
+    "gulp-sass": "^4.0.2",
+    "gulp-watch": "^5.0.1",
+    "package": "^1.0.1",
+    "package.json": "^2.0.1",
+    "rimraf": "^3.0.0"
   }
 }
