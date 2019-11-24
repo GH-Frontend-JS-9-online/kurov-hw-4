@@ -1,85 +1,47 @@
 'use strict';
-var gulp = require('gulp'),
-	watch = require('gulp-watch'),
-	preFixer = require('gulp-autoprefixer'),
-	uglify = require('gulp-uglify'),
-	rigger = require('gulp-rigger'),
-	sass = require('gulp-sass'),
-	sourceMap = require('gulp-soursemaps'),
-	rimRaf = require('rimraf'),
-	cssMin = ('gulp-minify-css'),
-	browserSync = require('browser-sync'),
-	reload = browserSync.reload;
 
-var path = {
-	build: {
-		html: 'build/',
-		js: 'build/js/',
-		css: 'build/css/'
-	},
-	src: {
-		html: 'src/*.html',
-		js: 'src/js/main.js',
-		css: 'src/style/*.*'		
-	},
-	watch: {
-		html: 'src/*.html',
-		js: 'src/js/main.js',
-		style: 'src/style/*.*',
-	},
-	clean: './build'
+const { series, parallel, watch } = require('gulp');
+const requireDir = require('require-dir');
+const browserSync = require('browser-sync').create();
+
+const tasks = requireDir('./gulp/tasks', { recurse: true });
+const paths = require('./gulp/paths');
+
+const serve = () => {
+  return browserSync.init({
+    server: 'build',
+    notify: false,
+    open: false,
+    cors: true,
+    ui: false,
+    logPrefix: 'DevServer',
+    host: 'localhost',
+    port: process.env.PORT || 1234,
+  });
 };
 
-gulp.task("webserver", function (){
-	browserSync({
-		server: {
-			baseDir: "build"
-		},
-		host: 'localhost',
-		port: 5000,
-		tunnel: true
-	});
-});
+const watcher = done => {
+  watch(paths.watch.html).on('change', series(tasks.html, browserSync.reload));
+  watch(paths.watch.css).on('change', series(tasks.css, browserSync.reload));
+  watch(paths.watch.js).on('change', series(tasks.scripts, browserSync.reload));
+  watch(paths.watch.images, tasks.images);
+  watch(paths.watch.fonts, tasks.fonts);
 
-gulp.task('html:build', function(){
-	gulp.src(path.src.html)
-	.pipe(rigger())
-	.pipe(gulp.dest(path.build.html))
-	.pipe(reload({stream:true}))
-});
+  done();
+};
 
-gulp.task('js:build', function(){
-	gulp.src(path.src.js)
-	.pipe(rigger())
-	.pipe(soursemaps.init())
-	.pipe(uglify())
-	.pipe(sourcemaps.write())
-	.pipe(gulp.dest(path.build.js))
-	.pipe(reload({stream: true}));
-});
+exports.start = series(
+  tasks.clean,
+  tasks.images,
+  parallel(tasks.css, tasks.fonts, tasks.scripts, tasks.html),
+  tasks.inject,
+  watcher,
+  serve
+);
 
-gulp.task('style:build', function(){
-	gulp.src(path.src.style)
-	.pipe(sourcemaps.init())
-	.pipe(saas())
-	.pipe(prefixer())
-	.pipe(cssmin())
-	.pipe(sourcemaps.write())
-	.pipe(gulp.dest(path.build.css))
-	.pipe(reload({stream: true}));
-});
-
-gulp.task('build', [
-	'html:build',
-	'js:build',
-	'style:build'
-	]);
-
-gulp.task('watch', function(){
-	watch([path.watch.js], function (ev, callback) {
-		gulp.start('js:build');
-	});
-	watch([path.watch.html], function(ev, callback){
-		
-	})
-})
+exports.build = series(
+  tasks.clean,
+  tasks.images,
+  parallel(tasks.css, tasks.fonts, tasks.scripts, tasks.html),
+  tasks.inject
+);
